@@ -64,6 +64,16 @@ router.patch('/:id/location', async (req, res) => {
       { new: true }
     );
     if (!driver) return res.status(404).json({ error: 'Driver not found' });
+
+    // Detect and update current state in background
+    try {
+      const { detectStateFromCoordinates } = require('../services/stateDetectionService');
+      const state = await detectStateFromCoordinates(parsedLat, parsedLng);
+      if (state && state._id.toString() !== driver.currentState?.toString()) {
+        await Driver.findByIdAndUpdate(req.params.id, { currentState: state._id });
+      }
+    } catch {}
+
     res.json(driver);
   } catch (err) {
     res.status(500).json({ error: err.message });

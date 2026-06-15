@@ -18,11 +18,15 @@ const reportSchema = new mongoose.Schema({
   address: { type: String, default: '' },
   photo: { type: String, default: null },
   resolvedPhoto: { type: String, default: null },
-  driverId: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver', required: true },
+  driverId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   driverName: { type: String, required: true },
   driverPhone: { type: String, default: '' },
-  status: { type: String, enum: ['active', 'resolved'], default: 'active' },
-  resolvedBy: { type: String, enum: ['admin', 'user', null], default: null },
+  truck: { type: mongoose.Schema.Types.ObjectId, ref: 'Truck' },
+  homeState: { type: mongoose.Schema.Types.ObjectId, ref: 'State' },
+  currentState: { type: mongoose.Schema.Types.ObjectId, ref: 'State' },
+  assignedAuthority: { type: mongoose.Schema.Types.ObjectId, ref: 'Authority' },
+  status: { type: String, enum: ['active', 'resolved', 'closed'], default: 'active' },
+  resolvedBy: { type: String, enum: ['admin', 'user', 'authority', null], default: null },
   resolvedAt: { type: Date, default: null },
   userConfirmed: { type: Boolean, default: false },
   userConfirmedAt: { type: Date, default: null },
@@ -31,5 +35,6 @@ const reportSchema = new mongoose.Schema({
 
 reportSchema.index({ location: '2dsphere' });
 reportSchema.index({ driverId: 1, createdAt: -1 });
+reportSchema.index({ currentState: 1, status: 1 });
 
 module.exports = mongoose.model('Report', reportSchema);
