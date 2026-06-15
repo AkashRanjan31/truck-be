@@ -1,5 +1,3 @@
-const { Haversine } = require('haversine-distance');
-
 const calculateDistance = (coord1, coord2) => {
   // coord1 and coord2 should be [lat, lng]
   if (!coord1 || !coord2 || coord1.length < 2 || coord2.length < 2) {
